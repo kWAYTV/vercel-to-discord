@@ -2,7 +2,7 @@
 
 A lightweight Next.js app that pushes Vercel deployment events directly to your Discord channel. Stay in the loop with your deployments without leaving Discord.
 
-![image](https://github.com/user-attachments/assets/d9bf4982-d82f-4b00-9969-7356044726c4)
+![image](https://github.com/user-attachments/assets/1a0f7fc6-e0ec-4fbe-a976-82b2f5d34d7d)
 
 ## ⚡️ Quick Setup
 
