@@ -112,4 +112,4 @@ Contributions welcome! Want to help? Add:
 
 ## 🙏 Acknowledgments
 
-Thanks to [@rewbs](https://github.com/rewbs) for the original idea. While this is a complete rewrite with no remaining code from the original codebase, it's kept as a fork to acknowledge the inspiration.
+Thanks to [@rewbs](https://github.com/rewbs) for the original idea. This is a complete rewrite with no remaining code from the original codebase.
