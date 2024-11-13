@@ -1,5 +1,6 @@
 import { logger } from "@/lib/logger";
 import { CONFIG } from "@/lib/config";
+
 import { type DiscordMessage } from "@/lib/discord/types";
 import { type VercelWebhook } from "@/lib/vercel/types";
 
