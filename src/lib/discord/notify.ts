@@ -5,6 +5,7 @@ import { type DiscordMessage } from "@/lib/discord/types";
 import { type VercelWebhook } from "@/lib/vercel/types";
 
 const COLORS = {
+  PROMOTED: 0xd998e3, // Bright purple
   SUCCESS: 0x2ecc71, // Bright green
   ERROR: 0xe74c3c, // Bright red
   CANCELED: 0x95a5a6, // Light gray
@@ -13,6 +14,7 @@ const COLORS = {
 } as const;
 
 const EMOJIS = {
+  PROMOTED: "🔗",
   SUCCESS: "✅",
   ERROR: "❌",
   CANCELED: "🚫",
@@ -29,8 +31,9 @@ function getStateColor(type: VercelWebhook["type"]): number {
       return COLORS.PENDING;
     case "deployment.succeeded":
     case "deployment.ready":
-    case "deployment.promoted":
       return COLORS.SUCCESS;
+    case "deployment.promoted":
+      return COLORS.PROMOTED;
     case "deployment.error":
       return COLORS.ERROR;
     case "deployment.canceled":
@@ -46,8 +49,9 @@ function getStateEmoji(type: VercelWebhook["type"]): string {
       return EMOJIS.PENDING;
     case "deployment.succeeded":
     case "deployment.ready":
-    case "deployment.promoted":
       return EMOJIS.SUCCESS;
+    case "deployment.promoted":
+      return EMOJIS.PROMOTED;
     case "deployment.error":
       return EMOJIS.ERROR;
     case "deployment.canceled":
