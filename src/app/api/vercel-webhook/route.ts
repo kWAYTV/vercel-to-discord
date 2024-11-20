@@ -32,21 +32,47 @@ export async function POST(req: Request) {
       logger.info(`Ignoring non-deployment event: ${webhook.type}`);
     }
 
-    return Response.json({ status: "success" });
+    return Response.json({ success: true, message: "Webhook processed" });
   } catch (error) {
     logger.error("Webhook processing failed", error);
 
     if (error instanceof Error) {
-      return Response.json({ error: error.message }, { status: 400 });
+      return Response.json(
+        { success: false, error: error.message },
+        { status: 400 }
+      );
     }
 
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
-  return new Response(
-    "This endpoint only accepts POST requests from Vercel webhooks",
-    { status: 405 }
-  );
+  try {
+    return Response.json(
+      {
+        success: true,
+        message:
+          "This endpoint only accepts POST requests from verified Vercel webhooks",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    logger.error("Webhook verification failed", error);
+
+    if (error instanceof Error) {
+      return Response.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return Response.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
