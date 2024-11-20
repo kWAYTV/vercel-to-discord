@@ -7,7 +7,7 @@ import { AuroraBackground } from "@/components/background";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Vercel",
+  title: "Vercel x Discord",
   description: "Not for public use.",
 };
 
