@@ -4,7 +4,7 @@ import { CONFIG } from "@/lib/config";
 import { type DiscordMessage } from "@/lib/discord/types";
 import { type VercelWebhook } from "@/lib/vercel/types";
 
-import HttpStatusCode from "@/enums/http-error-codes";
+import HttpStatusCode from "@/enums/http-status-codes";
 
 const COLORS = {
   PROMOTED: 0xd998e3, // Bright purple

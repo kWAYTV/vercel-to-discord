@@ -5,7 +5,7 @@ import {
   createDeploymentMessage,
   sendDiscordNotification,
 } from "@/lib/discord/notify";
-import HttpStatusCode from "@/enums/http-error-codes";
+import HttpStatusCode from "@/enums/http-status-codes";
 
 export async function POST(req: Request) {
   try {
