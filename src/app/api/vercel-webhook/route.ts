@@ -5,6 +5,7 @@ import {
   createDeploymentMessage,
   sendDiscordNotification,
 } from "@/lib/discord/notify";
+import HttpStatusCode from "@/enums/http-error-codes";
 
 export async function POST(req: Request) {
   try {
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
     if (!verifySignature(rawBody, signature)) {
       return Response.json(
         { code: "invalid_signature", error: "Signature verification failed" },
-        { status: 401 }
+        { status: HttpStatusCode.UNAUTHORIZED_401 }
       );
     }
 
@@ -39,13 +40,13 @@ export async function POST(req: Request) {
     if (error instanceof Error) {
       return Response.json(
         { success: false, error: error.message },
-        { status: 400 }
+        { status: HttpStatusCode.BAD_REQUEST_400 }
       );
     }
 
     return Response.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: HttpStatusCode.INTERNAL_SERVER_ERROR_500 }
     );
   }
 }
@@ -58,7 +59,7 @@ export async function GET() {
         message:
           "This endpoint only accepts POST requests from verified Vercel webhooks",
       },
-      { status: 200 }
+      { status: HttpStatusCode.METHOD_NOT_ALLOWED_405 }
     );
   } catch (error) {
     logger.error("Webhook verification failed", error);
@@ -66,13 +67,13 @@ export async function GET() {
     if (error instanceof Error) {
       return Response.json(
         { success: false, error: error.message },
-        { status: 500 }
+        { status: HttpStatusCode.INTERNAL_SERVER_ERROR_500 }
       );
     }
 
     return Response.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: HttpStatusCode.INTERNAL_SERVER_ERROR_500 }
     );
   }
 }

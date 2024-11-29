@@ -4,6 +4,8 @@ import { CONFIG } from "@/lib/config";
 import { type DiscordMessage } from "@/lib/discord/types";
 import { type VercelWebhook } from "@/lib/vercel/types";
 
+import HttpStatusCode from "@/enums/http-error-codes";
+
 const COLORS = {
   PROMOTED: 0xd998e3, // Bright purple
   SUCCESS: 0x2ecc71, // Bright green
@@ -159,7 +161,7 @@ export async function sendDiscordNotification(
         body: JSON.stringify(message),
       });
 
-      if (response.status === 429) {
+      if (response.status === HttpStatusCode.TOO_MANY_REQUESTS_429) {
         const retryAfter = response.headers.get("Retry-After");
         logger.warn(`Rate limited, retrying after ${retryAfter} seconds`);
         await new Promise((resolve) =>
