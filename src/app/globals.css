@@ -6,6 +6,24 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* Aurora Animation Optimizations */
+  --aurora-gradient-angle: 100deg;
+  --aurora-animation-duration: 60s;
+  --aurora-blur-amount: 10px;
+  --aurora-opacity: 0.5;
+
+  /* Precomputed gradient stops */
+  --gradient-stop-1: 7%;
+  --gradient-stop-2: 10%;
+  --gradient-stop-3: 12%;
+  --gradient-stop-4: 16%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --aurora-animation-duration: 0s;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,4 +42,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
