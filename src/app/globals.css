@@ -20,6 +20,15 @@
   --gradient-stop-4: 16%;
 }
 
+@keyframes aurora {
+  from {
+    background-position: 50% 50%, 50% 50%;
+  }
+  to {
+    background-position: 350% 50%, 350% 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --aurora-animation-duration: 0s;
