@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { logger } from "@/lib/logger";
-import { CONFIG } from "@/lib/config";
+import { env } from "@/env";
 
 export function verifySignature(
   rawBody: string,
@@ -13,7 +13,7 @@ export function verifySignature(
   }
 
   const computedSignature = crypto
-    .createHmac("sha1", CONFIG.WEBHOOK_SECRET)
+    .createHmac("sha1", env.WEBHOOK_INTEGRATION_SECRET)
     .update(rawBody)
     .digest("hex");
 

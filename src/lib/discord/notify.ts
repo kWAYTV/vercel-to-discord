@@ -1,5 +1,5 @@
 import { logger } from "@/lib/logger";
-import { CONFIG } from "@/lib/config";
+import { env } from "@/env";
 
 import { type DiscordMessage } from "@/lib/discord/types";
 import { type VercelWebhook } from "@/lib/vercel/types";
@@ -155,7 +155,7 @@ export async function sendDiscordNotification(
 ): Promise<void> {
   for (let i = 0; i < 3; i++) {
     try {
-      const response = await fetch(CONFIG.DISCORD_WEBHOOK_URL, {
+      const response = await fetch(env.DISCORD_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(message),
