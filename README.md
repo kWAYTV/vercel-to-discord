@@ -1,90 +1,68 @@
-# Vercel to Discord Notifications
-
-A professional integration service that forwards Vercel deployment events to Discord channels through webhooks. Monitor your deployment status efficiently within your team's Discord workspace.
+# Vercel to Discord
 
 ![Deployment Notification Example](https://i.imgur.com/a3KtlZG.png)
 
+> Real-time Vercel deployment notifications in your Discord channels
+
+A lightweight service that bridges Vercel with Discord, providing instant deployment status updates to your team. Monitor build success, failures, and promotions without leaving your communication hub.
+
 ## Features
 
-- Real-time deployment notifications
-- Seamless integration with Vercel and Discord
-- Minimal setup required
-- Lightweight Next.js implementation
+- 🚀 **Real-time updates** - Immediate notifications when deployments start, succeed, fail or get promoted
+- 🎨 **Rich embeds** - Attractive, information-dense Discord messages with status colors and emojis
+- 🔗 **Deep linking** - Direct links to Vercel deployments, projects, and GitHub commits
+- 💬 **Commit context** - View branch, commit hash, and commit messages directly in Discord
+- 🔄 **Reliable delivery** - Built-in retry logic for API rate limits or network issues
 
-## Setup Guide
+## Quick Setup
 
-### Prerequisites
+### 1. Configure Discord Webhook
 
-- A Vercel account with deployment access
-- Discord server with administrative privileges
-- Node.js and npm (for local development)
+- Open Discord channel settings → Integrations → Create Webhook
+- Customize name/avatar if desired
+- Copy the webhook URL
 
-### Configuration Steps
+![Discord Webhook Setup](https://github.com/rewbs/vercel-to-discord/assets/74455/25162948-fc16-4865-b356-584d1566c704)
 
-1. **Vercel Webhook Configuration**
-
-   - Navigate to your Vercel settings
-   - Configure the webhook endpoint: `https://<your-domain>/api/vercel-webhook`
-   - Save the generated webhook secret
-
-   ![Vercel Webhook Configuration](https://github.com/rewbs/vercel-to-discord/assets/74455/d62d4ad1-6c8a-4839-8b57-c3f92487465d)
-
-2. **Discord Webhook Setup**
-
-   - Access your Discord server settings
-   - Create a new webhook in the desired channel
-   - Copy the webhook URL
-
-   ![Discord Webhook Setup](https://github.com/rewbs/vercel-to-discord/assets/74455/25162948-fc16-4865-b356-584d1566c704)
-
-3. **Environment Configuration**
-
-   ```env
-   # Vercel webhook secret (obtained from webhook setup)
-   WEBHOOK_INTEGRATION_SECRET=your_webhook_secret
-
-   # Discord webhook URL
-   DISCORD_WEBHOOK_URL=your_discord_webhook_url
-   ```
-
-## Deployment Options
-
-### Vercel Deployment (Recommended)
-
-The fastest way to deploy this service is through Vercel's platform:
+### 2. Deploy to Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kWAYTV/vercel-to-discord)
 
-### Self-Hosted Deployment
+- Add these environment variables during deployment:
+  ```
+  DISCORD_WEBHOOK_URL=your_discord_webhook_url
+  WEBHOOK_INTEGRATION_SECRET=generate_a_secure_random_value
+  ```
 
-For self-hosted environments, we recommend using container orchestration platforms:
+### 3. Connect Vercel Project
 
-- [Dokploy](https://dokploy.com/) - Simplified container deployment
-- [Coolify](https://coolify.io/) - Self-hosted PaaS solution
+- Go to Vercel project → Settings → Webhooks
+- Add webhook: `https://<your-deployed-url>/api/vercel-webhook`
+- Use the same secret you set in `WEBHOOK_INTEGRATION_SECRET`
+- Select the events you want to monitor
+
+![Vercel Webhook Configuration](https://github.com/rewbs/vercel-to-discord/assets/74455/d62d4ad1-6c8a-4839-8b57-c3f92487465d)
 
 ## Development
 
-### Local Setup
+```bash
+# Clone and install
+git clone https://github.com/yourusername/vercel-to-discord.git
+cd vercel-to-discord
+pnpm install
 
-1. Clone the repository
-2. Install dependencies: `pnpm install`
-3. Configure environment variables
-4. Start development server: `pnpm run dev`
+# Configure environment
+cp .env.example .env.local
+# Edit .env.local with your values
 
-## Contributing
-
-Contributions are welcome. Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## Credits
-
-Original concept by [@rewbs](https://github.com/rewbs). This implementation represents a complete architectural redesign and rewrite.
+# Start development server
+pnpm dev
+```
 
 ## License
 
-This project is open-source and available under the MIT License. See [LICENSE](license) for details.
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+Original concept by [@rewbs](https://github.com/rewbs). This implementation represents a complete architectural redesign and rewrite.
