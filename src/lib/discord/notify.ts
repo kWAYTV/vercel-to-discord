@@ -6,26 +6,7 @@ import { type VercelWebhook } from "@/lib/vercel/types";
 
 import HttpStatusCode from "@/enums/http-status-codes";
 
-const COLORS = {
-  PROMOTED: 0xd998e3, // Bright purple
-  SUCCESS: 0x2ecc71, // Bright green
-  ERROR: 0xe74c3c, // Bright red
-  CANCELED: 0x95a5a6, // Light gray
-  INFO: 0x3498db, // Bright blue
-  PENDING: 0xf1c40f, // Bright yellow
-} as const;
-
-const EMOJIS = {
-  PROMOTED: "🔗",
-  SUCCESS: "✅",
-  ERROR: "❌",
-  CANCELED: "🚫",
-  PENDING: "⏳",
-  BRANCH: "🌿",
-  COMMIT: "📝",
-  PROJECT: "📦",
-  DEPLOY: "🚀",
-} as const;
+import { COLORS, EMOJIS } from "@/lib/discord/consts";
 
 function getStateColor(type: VercelWebhook["type"]): number {
   switch (type) {
