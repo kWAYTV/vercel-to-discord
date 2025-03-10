@@ -51,3 +51,8 @@ export const webhookSchema = z.object({
 });
 
 export type VercelWebhook = z.infer<typeof webhookSchema>;
+
+/**
+ * Type representing the possible webhook types from Vercel
+ */
+export type WebhookType = VercelWebhook["type"];

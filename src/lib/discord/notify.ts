@@ -1,47 +1,110 @@
 import { logger } from "@/lib/logger";
 import { env } from "@/env";
 
-import { type DiscordMessage } from "@/lib/discord/types";
-import { type VercelWebhook } from "@/lib/vercel/types";
+import {
+  type DiscordMessage,
+  type DiscordEmbedField,
+  type StateProperty,
+} from "@/lib/discord/types";
+import { type VercelWebhook, type WebhookType } from "@/lib/vercel/types";
 
 import HttpStatusCode from "@/enums/http-status-codes";
 
 import { COLORS, EMOJIS } from "@/lib/discord/consts";
 
-function getStateColor(type: VercelWebhook["type"]): number {
-  switch (type) {
-    case "deployment.created":
-      return COLORS.PENDING;
-    case "deployment.succeeded":
-    case "deployment.ready":
-      return COLORS.SUCCESS;
-    case "deployment.promoted":
-      return COLORS.PROMOTED;
-    case "deployment.error":
-      return COLORS.ERROR;
-    case "deployment.canceled":
-      return COLORS.CANCELED;
-    default:
-      return COLORS.INFO;
-  }
+/**
+ * Maps webhook types to their corresponding state properties (colors, emojis)
+ */
+function getStateProperty(
+  type: WebhookType,
+  property: StateProperty
+): number | string {
+  const mappings = {
+    color: {
+      "deployment.created": COLORS.PENDING,
+      "deployment.succeeded": COLORS.SUCCESS,
+      "deployment.ready": COLORS.SUCCESS,
+      "deployment.promoted": COLORS.PROMOTED,
+      "deployment.error": COLORS.ERROR,
+      "deployment.canceled": COLORS.CANCELED,
+      default: COLORS.INFO,
+    },
+    emoji: {
+      "deployment.created": EMOJIS.PENDING,
+      "deployment.succeeded": EMOJIS.SUCCESS,
+      "deployment.ready": EMOJIS.SUCCESS,
+      "deployment.promoted": EMOJIS.PROMOTED,
+      "deployment.error": EMOJIS.ERROR,
+      "deployment.canceled": EMOJIS.CANCELED,
+      default: EMOJIS.DEPLOY,
+    },
+  };
+
+  return (
+    mappings[property][type as keyof (typeof mappings)[typeof property]] ||
+    mappings[property].default
+  );
 }
 
-function getStateEmoji(type: VercelWebhook["type"]): string {
-  switch (type) {
-    case "deployment.created":
-      return EMOJIS.PENDING;
-    case "deployment.succeeded":
-    case "deployment.ready":
-      return EMOJIS.SUCCESS;
-    case "deployment.promoted":
-      return EMOJIS.PROMOTED;
-    case "deployment.error":
-      return EMOJIS.ERROR;
-    case "deployment.canceled":
-      return EMOJIS.CANCELED;
-    default:
-      return EMOJIS.DEPLOY;
+/**
+ * Creates GitHub-related fields for the Discord message
+ */
+function createGithubFields(
+  deployment: VercelWebhook["payload"]["deployment"]
+): DiscordEmbedField[] {
+  if (!deployment.meta.githubCommitRef) {
+    return [];
   }
+
+  const fields: DiscordEmbedField[] = [];
+  const githubCommitUrl = `https://github.com/${deployment.meta.githubCommitOrg}/${deployment.meta.githubCommitRepo}/commit/${deployment.meta.githubCommitSha}`;
+  const shortSha = deployment.meta.githubCommitSha?.slice(0, 7);
+
+  fields.push(
+    {
+      name: `${EMOJIS.BRANCH} Branch`,
+      value: `\`${deployment.meta.githubCommitRef}\``,
+      inline: true,
+    },
+    {
+      name: `${EMOJIS.COMMIT} Commit`,
+      value: `[${shortSha}](${githubCommitUrl})`,
+      inline: true,
+    }
+  );
+
+  if (deployment.meta.githubCommitMessage) {
+    fields.push({
+      name: "💬 Commit Message",
+      value: `\`\`\`\n${deployment.meta.githubCommitMessage}\`\`\``,
+      inline: false,
+    });
+  }
+
+  return fields;
+}
+
+/**
+ * Creates the deployment URL field for successful deployments
+ */
+function createDeploymentUrlField(
+  webhookType: WebhookType,
+  deploymentUrl: string
+): DiscordEmbedField[] {
+  if (
+    webhookType === "deployment.succeeded" ||
+    webhookType === "deployment.ready"
+  ) {
+    return [
+      {
+        name: "🌐 Preview URL",
+        value: `[${new URL(deploymentUrl).hostname}](${deploymentUrl})`,
+        inline: false,
+      },
+    ];
+  }
+
+  return [];
 }
 
 export function createDeploymentMessage(
@@ -49,11 +112,10 @@ export function createDeploymentMessage(
 ): DiscordMessage {
   const { deployment, links } = webhook.payload;
   const state = webhook.type.split(".")[1];
-  const stateEmoji = getStateEmoji(webhook.type);
-
+  const stateEmoji = getStateProperty(webhook.type, "emoji") as string;
   const deploymentUrl = links.deployment;
 
-  const fields = [
+  const baseFields = [
     {
       name: `${EMOJIS.PROJECT} Project`,
       value: `[${deployment.name}](${links.project})`,
@@ -66,43 +128,13 @@ export function createDeploymentMessage(
     },
   ];
 
-  if (deployment.meta.githubCommitRef) {
-    const githubCommitUrl = `https://github.com/${deployment.meta.githubCommitOrg}/${deployment.meta.githubCommitRepo}/commit/${deployment.meta.githubCommitSha}`;
-    const shortSha = deployment.meta.githubCommitSha?.slice(0, 7);
+  const githubFields = createGithubFields(deployment);
+  const deploymentUrlFields = createDeploymentUrlField(
+    webhook.type,
+    deploymentUrl
+  );
 
-    fields.push(
-      {
-        name: `${EMOJIS.BRANCH} Branch`,
-        value: `\`${deployment.meta.githubCommitRef}\``,
-        inline: true,
-      },
-      {
-        name: `${EMOJIS.COMMIT} Commit`,
-        value: `[${shortSha}](${githubCommitUrl})`,
-        inline: true,
-      }
-    );
-
-    if (deployment.meta.githubCommitMessage) {
-      fields.push({
-        name: "💬 Commit Message",
-        value: `\`\`\`\n${deployment.meta.githubCommitMessage}\`\`\``,
-        inline: false,
-      });
-    }
-  }
-
-  // Add deployment URL for successful deployments
-  if (
-    webhook.type === "deployment.succeeded" ||
-    webhook.type === "deployment.ready"
-  ) {
-    fields.push({
-      name: "🌐 Preview URL",
-      value: `[${new URL(deploymentUrl).hostname}](${deploymentUrl})`,
-      inline: false,
-    });
-  }
+  const allFields = [...baseFields, ...githubFields, ...deploymentUrlFields];
 
   return {
     embeds: [
@@ -117,8 +149,8 @@ export function createDeploymentMessage(
         ]
           .filter(Boolean)
           .join("\n"),
-        color: getStateColor(webhook.type),
-        fields,
+        color: getStateProperty(webhook.type, "color") as number,
+        fields: allFields,
         timestamp: new Date(webhook.createdAt).toISOString(),
         footer: {
           text: `Deployment ${deployment.id}`,
