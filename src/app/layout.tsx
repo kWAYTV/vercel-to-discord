@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 
-import { AuroraBackground } from "@/components/background";
-
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -39,9 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
-      <body>
-        <AuroraBackground>{children}</AuroraBackground>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
