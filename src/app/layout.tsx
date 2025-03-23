@@ -21,7 +21,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Vercel x Discord",
   description: "Not for public use.",
-  manifest: "/manifest.json",
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
