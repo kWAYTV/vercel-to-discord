@@ -1,7 +1,10 @@
 import { logger } from "@/lib/logger";
 import { webhookSchema } from "@/types/vercel";
 import { verifySignature } from "@/lib/verify";
-import { createDeploymentMessage, sendDiscordNotification } from "@/lib/notify";
+import {
+  createMessageFromWebhook,
+  sendDiscordNotification,
+} from "@/lib/notify";
 import HttpStatusCode from "@/enums/http-status-codes";
 
 export async function POST(req: Request) {
@@ -23,12 +26,8 @@ export async function POST(req: Request) {
 
     logger.info(`Processing ${webhook.type} event`);
 
-    if (webhook.type.startsWith("deployment.")) {
-      const message = createDeploymentMessage(webhook);
-      await sendDiscordNotification(message);
-    } else {
-      logger.info(`Ignoring non-deployment event: ${webhook.type}`);
-    }
+    const message = createMessageFromWebhook(webhook);
+    await sendDiscordNotification(message);
 
     return Response.json({ success: true, message: "Webhook processed" });
   } catch (error) {
