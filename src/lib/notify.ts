@@ -5,12 +5,12 @@ import {
   type DiscordMessage,
   type DiscordEmbedField,
   type StateProperty,
-} from "@/lib/discord/types";
-import { type VercelWebhook, type WebhookType } from "@/lib/vercel/types";
+} from "@/types/discord";
+import { type VercelWebhook, type WebhookType } from "@/types/vercel";
 
 import HttpStatusCode from "@/enums/http-status-codes";
 
-import { COLORS, EMOJIS } from "@/lib/discord/consts";
+import { COLORS, EMOJIS } from "@/consts/discord";
 
 /**
  * Maps webhook types to their corresponding state properties (colors, emojis)

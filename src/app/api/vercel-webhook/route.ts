@@ -1,10 +1,7 @@
 import { logger } from "@/lib/logger";
-import { webhookSchema } from "@/lib/vercel/types";
-import { verifySignature } from "@/lib/vercel/verify";
-import {
-  createDeploymentMessage,
-  sendDiscordNotification,
-} from "@/lib/discord/notify";
+import { webhookSchema } from "@/types/vercel";
+import { verifySignature } from "@/lib/verify";
+import { createDeploymentMessage, sendDiscordNotification } from "@/lib/notify";
 import HttpStatusCode from "@/enums/http-status-codes";
 
 export async function POST(req: Request) {
