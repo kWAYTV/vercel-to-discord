@@ -9,7 +9,7 @@ export const Footer = () => {
           href="https://github.com/kWAYTV/vercel-to-discord"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm drop-shadow-[0_0_8px_rgba(156,163,175,0.5)] flex items-center"
+          className="text-muted-foreground hover:text-foreground hover:underline transition-colors duration-200 text-sm drop-shadow-[0_0_8px_rgba(156,163,175,0.5)] flex items-center"
         >
           GitHub
           <ArrowUpRight className="w-3 h-3 ml-0.5 inline-flex" />
