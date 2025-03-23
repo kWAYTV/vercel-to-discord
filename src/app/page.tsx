@@ -1,5 +1,5 @@
-import { LogoSection } from "@/components/logo-section";
-import { Footer } from "@/components/footer";
+import { LogoSection } from "@/components/core/logo-section";
+import { Footer } from "@/components/core/footer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Github } from "lucide-react";

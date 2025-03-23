@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import LogoImage from "@/components/logo-image";
+import LogoImage from "@/components/core/logo-image";
 
 const LogoSwitcher = () => {
   const [currentLogo, setCurrentLogo] = useState("vercel");

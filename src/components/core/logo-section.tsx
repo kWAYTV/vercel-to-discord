@@ -1,4 +1,4 @@
-import LogoSwitcher from "@/components/logo-switcher";
+import LogoSwitcher from "@/components/core/logo-switcher";
 import Image from "next/image";
 
 export const LogoSection = () => {

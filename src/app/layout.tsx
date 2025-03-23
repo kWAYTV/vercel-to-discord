@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Providers } from "@/components/providers/providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,13 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <div className="relative min-h-screen overflow-hidden">
+            <div className="fixed top-4 right-4 z-50">
+              <ModeToggle />
+            </div>
             <AnimatedGridPattern
               maxOpacity={0.1}
               duration={3}
@@ -58,7 +57,7 @@ export default function RootLayout({
             />
             {children}
           </div>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
