@@ -5,9 +5,9 @@ export const LogoSection = () => {
   return (
     <div className="relative flex flex-wrap items-center justify-center gap-4 px-4">
       <LogoSwitcher />
-      <span className="text-2xl font-bold text-gray-400">x</span>
+      <span className="text-2xl font-bold text-muted-foreground">x</span>
       <Image
-        className="relative dark:drop-shadow-[0_0_0.3rem_#5865F270]"
+        className="relative drop-shadow-[0_0_0.3rem_rgba(88,101,242,0.4)]"
         src="/discord.svg"
         alt="Discord Logo"
         width={50}

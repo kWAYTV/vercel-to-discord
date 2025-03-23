@@ -12,7 +12,7 @@ const LogoImage = memo(function LogoImage({
 }) {
   return (
     <Image
-      className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert transform-gpu"
+      className="relative drop-shadow-[0_0_0.3rem_rgba(var(--foreground-rgb),0.4)] dark:invert transform-gpu"
       src={src}
       alt={alt}
       width={120}
