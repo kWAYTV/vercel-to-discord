@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo, type FC } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import LogoImage from "@/components/core/logo-image";
 
-const LogoSwitcher = () => {
-  const [currentLogo, setCurrentLogo] = useState("vercel");
+type LogoType = "vercel" | "next";
+
+const LogoSwitcher: FC = function LogoSwitcher() {
+  const [currentLogo, setCurrentLogo] = useState<LogoType>("vercel");
 
   const toggleLogo = useCallback(() => {
     setCurrentLogo((prev) => (prev === "vercel" ? "next" : "vercel"));
@@ -17,7 +19,11 @@ const LogoSwitcher = () => {
   }, [toggleLogo]);
 
   return (
-    <div className="relative w-[120px] h-[25px] transform-gpu will-change-transform">
+    <div
+      className="relative w-[120px] h-[25px] transform-gpu will-change-transform"
+      aria-label="Alternating logo display"
+      role="img"
+    >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentLogo}
