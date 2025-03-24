@@ -22,7 +22,25 @@ export const Footer: FC = function Footer() {
           </Link>
         </Suspense>
         <p className="text-center text-sm text-muted-foreground text-balance drop-shadow-[0_0_8px_rgba(156,163,175,0.5)]">
-          This site is not affiliated with or endorsed by Vercel or Discord.
+          This site is not affiliated with or endorsed by{" "}
+          <Link
+            href="https://vercel.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground hover:underline transition-colors duration-200"
+          >
+            Vercel
+          </Link>{" "}
+          or{" "}
+          <Link
+            href="https://discord.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground hover:underline transition-colors duration-200"
+          >
+            Discord
+          </Link>
+          .
         </p>
       </div>
     </footer>
