@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 import { env } from "@/env";
 
 import {
@@ -173,7 +172,6 @@ export function createDeploymentMessage(
   const { deployment, links } = webhook.payload;
 
   if (!deployment || !links) {
-    logger.warn("Missing deployment or links data in webhook payload");
     return createGenericMessage(webhook);
   }
 
@@ -237,7 +235,6 @@ export function createDomainMessage(webhook: VercelWebhook): DiscordMessage {
   const eventEmoji = getStateProperty(webhook.type, "emoji") as string;
 
   if (!domain) {
-    logger.warn("Missing domain data in webhook payload");
     return createGenericMessage(webhook);
   }
 
@@ -264,7 +261,6 @@ export function createProjectMessage(webhook: VercelWebhook): DiscordMessage {
   const eventEmoji = getStateProperty(webhook.type, "emoji") as string;
 
   if (!project) {
-    logger.warn("Missing project data in webhook payload");
     return createGenericMessage(webhook);
   }
 
@@ -359,7 +355,6 @@ export async function sendDiscordNotification(
 
       if (response.status === HttpStatusCode.TOO_MANY_REQUESTS_429) {
         const retryAfter = response.headers.get("Retry-After");
-        logger.warn(`Rate limited, retrying after ${retryAfter} seconds`);
         await new Promise((resolve) =>
           setTimeout(resolve, (parseInt(retryAfter ?? "5") + 1) * 1000)
         );
@@ -372,11 +367,9 @@ export async function sendDiscordNotification(
         );
       }
 
-      logger.success("Discord notification sent successfully");
       return;
     } catch (error) {
       if (i === 2) throw error;
-      logger.warn(`Retry ${i + 1}/3 after error`);
       await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
     }
   }

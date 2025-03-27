@@ -1,6 +1,5 @@
 import crypto from "crypto";
 
-import { logger } from "@/lib/logger";
 import { env } from "@/env";
 
 export function verifySignature(
@@ -8,7 +7,6 @@ export function verifySignature(
   signature: string | null
 ): boolean {
   if (!signature) {
-    logger.error("No signature provided");
     return false;
   }
 
@@ -16,9 +14,6 @@ export function verifySignature(
     .createHmac("sha1", env.WEBHOOK_INTEGRATION_SECRET)
     .update(rawBody)
     .digest("hex");
-
-  logger.info(`Computed signature: ${computedSignature}`);
-  logger.info(`Received signature: ${signature}`);
 
   return computedSignature === signature;
 }

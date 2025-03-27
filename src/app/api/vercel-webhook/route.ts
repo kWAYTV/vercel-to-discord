@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 import { webhookSchema } from "@/types/vercel";
 import { verifySignature } from "@/lib/verify";
 import {
@@ -9,8 +8,6 @@ import HttpStatusCode from "@/enums/http-status-codes";
 
 export async function POST(req: Request) {
   try {
-    logger.info("Received webhook request");
-
     const rawBody = await req.text();
     const signature = req.headers.get("x-vercel-signature");
 
@@ -24,15 +21,11 @@ export async function POST(req: Request) {
     const payload = JSON.parse(rawBody);
     const webhook = webhookSchema.parse(payload);
 
-    logger.info(`Processing ${webhook.type} event`);
-
     const message = createMessageFromWebhook(webhook);
     await sendDiscordNotification(message);
 
     return Response.json({ success: true, message: "Webhook processed" });
   } catch (error) {
-    logger.error("Webhook processing failed", error);
-
     if (error instanceof Error) {
       return Response.json(
         { success: false, error: error.message },
@@ -58,8 +51,6 @@ export async function GET() {
       { status: HttpStatusCode.METHOD_NOT_ALLOWED_405 }
     );
   } catch (error) {
-    logger.error("Webhook verification failed", error);
-
     if (error instanceof Error) {
       return Response.json(
         { success: false, error: error.message },
