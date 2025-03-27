@@ -342,10 +342,20 @@ export function createMessageFromWebhook(
   return createGenericMessage(webhook);
 }
 
+/**
+ * Sends a notification to Discord with retry capability
+ */
 export async function sendDiscordNotification(
   message: DiscordMessage
 ): Promise<void> {
-  for (let i = 0; i < 3; i++) {
+  const MAX_RETRIES = 3;
+  const calculateBackoff = (attempt: number): number => 1000 * attempt;
+
+  const sendRequest = async (attempt: number = 0): Promise<void> => {
+    if (attempt >= MAX_RETRIES) {
+      throw new Error("Maximum retry attempts reached");
+    }
+
     try {
       const response = await fetch(env.DISCORD_WEBHOOK_URL, {
         method: "POST",
@@ -353,12 +363,13 @@ export async function sendDiscordNotification(
         body: JSON.stringify(message),
       });
 
+      // Handle rate limiting
       if (response.status === HttpStatusCode.TOO_MANY_REQUESTS_429) {
         const retryAfter = response.headers.get("Retry-After");
-        await new Promise((resolve) =>
-          setTimeout(resolve, (parseInt(retryAfter ?? "5") + 1) * 1000)
-        );
-        continue;
+        const waitTime = (parseInt(retryAfter ?? "5") + 1) * 1000;
+
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+        return sendRequest(attempt);
       }
 
       if (!response.ok) {
@@ -369,8 +380,14 @@ export async function sendDiscordNotification(
 
       return;
     } catch (error) {
-      if (i === 2) throw error;
-      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+      if (attempt === MAX_RETRIES - 1) throw error;
+
+      // Exponential backoff before retry
+      const backoffTime = calculateBackoff(attempt + 1);
+      await new Promise((resolve) => setTimeout(resolve, backoffTime));
+      return sendRequest(attempt + 1);
     }
-  }
+  };
+
+  return sendRequest();
 }
