@@ -1,6 +1,6 @@
 # Vercel to Discord
 
-![Deployment Notification Example](https://i.imgur.com/a3KtlZG.png)
+![Deployment Notification Example](https://pbgegowfpr.ufs.sh/f/5Ajhdz1iWCoOvQQd7AZPbPwa8o1hxYgHdu5VtCizUOKsrmcA)
 
 A professional integration service that connects Vercel deployments with Discord, delivering real-time status notifications to your team channels. This lightweight solution enhances your DevOps workflow by providing immediate visibility into your deployment pipeline without leaving your communication platform.
 
@@ -23,7 +23,7 @@ A professional integration service that connects Vercel deployments with Discord
 3. Customize the webhook name and avatar if desired
 4. Copy the generated webhook URL
 
-![Discord Webhook Setup](https://github.com/rewbs/vercel-to-discord/assets/74455/25162948-fc16-4865-b356-584d1566c704)
+![Discord Webhook Setup](https://pbgegowfpr.ufs.sh/f/5Ajhdz1iWCoOqCtS5ozZobQTyXmEqudMpnZIcB8hgk3jw96H)
 
 ### 2. Deploy to Vercel
 
@@ -43,7 +43,7 @@ WEBHOOK_INTEGRATION_SECRET=generate_a_secure_random_string
 3. Set the secret to match the `WEBHOOK_INTEGRATION_SECRET` value you configured
 4. Select the event types you want notifications for (recommended: all deployment events)
 
-![Vercel Webhook Configuration](https://github.com/rewbs/vercel-to-discord/assets/74455/d62d4ad1-6c8a-4839-8b57-c3f92487465d)
+![Vercel Webhook Configuration](https://pbgegowfpr.ufs.sh/f/5Ajhdz1iWCoOFC7MeJptgNcYPhDMdF4apry536Vj1AUzvS8K)
 
 ## Security Considerations
 
