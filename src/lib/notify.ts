@@ -7,6 +7,11 @@ import HttpStatusCode from "@/enums/http-status-codes";
 
 import { EMOJIS, getStateProperty } from "@/consts/discord";
 
+// Define bot info centrally
+const DISCORD_BOT_USERNAME = "Vercel";
+const DISCORD_BOT_AVATAR_URL =
+  "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png";
+
 /**
  * Creates GitHub-related fields for the Discord message
  */
@@ -83,6 +88,7 @@ export function createDeploymentMessage(
 
   const state = webhook.type.split(".")[1];
   const stateEmoji = getStateProperty(webhook.type, "emoji") as string;
+  const stateColor = getStateProperty(webhook.type, "color") as number;
   const deploymentUrl = links.deployment;
 
   const baseFields = [
@@ -106,20 +112,21 @@ export function createDeploymentMessage(
 
   const allFields = [...baseFields, ...githubFields, ...deploymentUrlFields];
 
+  // Simplified description building
+  let description = `**Status**: ${
+    state.charAt(0).toUpperCase() + state.slice(1)
+  }`;
+  if (webhook.type === "deployment.error" && deployment.meta.buildError) {
+    description += `\n**Error**: \`\`\`\n${deployment.meta.buildError}\`\`\``;
+  }
+
   return {
     embeds: [
       {
         title: `${stateEmoji} Deployment ${state}`,
         url: deploymentUrl,
-        description: [
-          `**Status**: ${state.charAt(0).toUpperCase() + state.slice(1)}`,
-          webhook.type === "deployment.error" && deployment.meta.buildError
-            ? `\n**Error**: \`\`\`\n${deployment.meta.buildError}\`\`\``
-            : "",
-        ]
-          .filter(Boolean)
-          .join("\n"),
-        color: getStateProperty(webhook.type, "color") as number,
+        description: description,
+        color: stateColor,
         fields: allFields,
         timestamp: new Date(webhook.createdAt).toISOString(),
         footer: {
@@ -127,9 +134,8 @@ export function createDeploymentMessage(
         },
       },
     ],
-    username: "Vercel",
-    avatar_url:
-      "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
+    username: DISCORD_BOT_USERNAME,
+    avatar_url: DISCORD_BOT_AVATAR_URL,
   } satisfies DiscordMessage;
 }
 
@@ -139,6 +145,7 @@ export function createDeploymentMessage(
 export function createDomainMessage(webhook: VercelWebhook): DiscordMessage {
   const { domain } = webhook.payload;
   const eventEmoji = getStateProperty(webhook.type, "emoji") as string;
+  const eventColor = getStateProperty(webhook.type, "color") as number;
 
   if (!domain) {
     return createGenericMessage(webhook);
@@ -149,13 +156,12 @@ export function createDomainMessage(webhook: VercelWebhook): DiscordMessage {
       {
         title: `${eventEmoji} Domain ${webhook.type.split(".")[1]}`,
         description: `**Domain**: ${domain.name}`,
-        color: getStateProperty(webhook.type, "color") as number,
+        color: eventColor,
         timestamp: new Date(webhook.createdAt).toISOString(),
       },
     ],
-    username: "Vercel",
-    avatar_url:
-      "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
+    username: DISCORD_BOT_USERNAME,
+    avatar_url: DISCORD_BOT_AVATAR_URL,
   } satisfies DiscordMessage;
 }
 
@@ -165,6 +171,7 @@ export function createDomainMessage(webhook: VercelWebhook): DiscordMessage {
 export function createProjectMessage(webhook: VercelWebhook): DiscordMessage {
   const { project } = webhook.payload;
   const eventEmoji = getStateProperty(webhook.type, "emoji") as string;
+  const eventColor = getStateProperty(webhook.type, "color") as number;
 
   if (!project) {
     return createGenericMessage(webhook);
@@ -175,13 +182,12 @@ export function createProjectMessage(webhook: VercelWebhook): DiscordMessage {
       {
         title: `${eventEmoji} Project ${webhook.type.split(".")[1]}`,
         description: `**Project**: ${project.id}`,
-        color: getStateProperty(webhook.type, "color") as number,
+        color: eventColor,
         timestamp: new Date(webhook.createdAt).toISOString(),
       },
     ],
-    username: "Vercel",
-    avatar_url:
-      "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
+    username: DISCORD_BOT_USERNAME,
+    avatar_url: DISCORD_BOT_AVATAR_URL,
   } satisfies DiscordMessage;
 }
 
@@ -215,33 +221,30 @@ export function createGenericMessage(webhook: VercelWebhook): DiscordMessage {
         },
       },
     ],
-    username: "Vercel",
-    avatar_url:
-      "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
+    username: DISCORD_BOT_USERNAME,
+    avatar_url: DISCORD_BOT_AVATAR_URL,
   } satisfies DiscordMessage;
 }
 
 /**
  * Creates the appropriate Discord message based on the webhook type
  */
+const messageCreators: Partial<
+  Record<string, (webhook: VercelWebhook) => DiscordMessage>
+> = {
+  deployment: createDeploymentMessage,
+  domain: createDomainMessage,
+  project: createProjectMessage,
+};
+
 export function createMessageFromWebhook(
   webhook: VercelWebhook
 ): DiscordMessage {
-  const type = webhook.type;
+  const typePrefix = webhook.type.split(".")[0];
+  const creator = messageCreators[typePrefix];
 
-  // Handle deployment-related events
-  if (type.startsWith("deployment.")) {
-    return createDeploymentMessage(webhook);
-  }
-
-  // Handle domain-related events
-  if (type.startsWith("domain.")) {
-    return createDomainMessage(webhook);
-  }
-
-  // Handle project-related events
-  if (type.startsWith("project.")) {
-    return createProjectMessage(webhook);
+  if (creator) {
+    return creator(webhook);
   }
 
   // For all other event types, use the generic message format
