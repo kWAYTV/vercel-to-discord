@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { type FC, Suspense } from "react";
-
-const LinkFallback = () => (
-  <div className="w-16 h-5 bg-muted/20 animate-pulse rounded" />
-);
+import { LinkFallback } from "@/components/core/link-fallback";
 
 export const Footer: FC = function Footer() {
   return (
