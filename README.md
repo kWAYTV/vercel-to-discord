@@ -2,7 +2,7 @@
 
 A lightweight integration service that connects Vercel deployments with Discord, delivering real-time status notifications to your team channels. Enhance your DevOps workflow with immediate visibility into your deployment pipeline.
 
-## Features
+## Features !
 
 - Real-time deployment event notifications
 - Support for all Vercel webhook event types
